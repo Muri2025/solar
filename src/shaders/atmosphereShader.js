@@ -26,15 +26,16 @@ void main() {
     vec3 lightDirection = normalize(uLightDirection);
 
     float sunAmount = max(dot(normalDirection, lightDirection), 0.0);
-    float fresnel = pow(1.0 - max(dot(viewDirection, normalDirection), 0.0), 3.2);
-    float mie = pow(max(dot(viewDirection, lightDirection), 0.0), 4.0);
-    float nightWrap = pow(1.0 - sunAmount, 1.8);
+    float horizon = 1.0 - max(dot(viewDirection, normalDirection), 0.0);
+    float fresnel = pow(horizon, 4.4);
+    float mie = pow(max(dot(viewDirection, lightDirection), 0.0), 7.0);
+    float nightWrap = pow(1.0 - sunAmount, 2.4);
 
-    vec3 rayleigh = uRayleighColor * (0.45 + sunAmount * 0.85);
-    vec3 mieScattering = uMieColor * (0.1 + mie * 1.6);
-    vec3 nightGlow = uRayleighColor * 0.16 * nightWrap;
+    vec3 rayleigh = uRayleighColor * (0.24 + sunAmount * 0.82);
+    vec3 mieScattering = uMieColor * (0.04 + mie * 1.18);
+    vec3 nightGlow = uRayleighColor * 0.08 * nightWrap;
 
-    float alpha = clamp(fresnel * 0.95 + nightWrap * 0.06, 0.0, 0.95);
+    float alpha = clamp(fresnel * 0.72 + nightWrap * 0.03, 0.0, 0.72);
     vec3 color = rayleigh * fresnel + mieScattering + nightGlow;
 
     gl_FragColor = vec4(color, alpha);

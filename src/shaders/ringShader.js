@@ -33,10 +33,12 @@ float bandNoise(float radius) {
 void main() {
     vec2 centerUv = vUv - 0.5;
     float radius = length(centerUv) * 2.0;
+    float angle = atan(centerUv.y, centerUv.x);
 
     float disc = smoothstep(0.36, 0.4, radius) * (1.0 - smoothstep(0.88, 0.96, radius));
     float cassini = smoothstep(0.62, 0.66, radius) - smoothstep(0.67, 0.71, radius);
-    float rings = clamp(bandNoise(radius), 0.18, 1.0);
+    float azimuthNoise = 0.94 + sin(angle * 14.0 + radius * 120.0) * 0.05;
+    float rings = clamp(bandNoise(radius) * azimuthNoise, 0.18, 1.0);
     float alpha = disc * rings * (1.0 - cassini * 0.92);
 
     if (alpha <= 0.01) discard;
@@ -49,6 +51,7 @@ void main() {
 
     vec3 color = mix(uShadowColor, uBaseColor, diffuse * 0.85 + 0.15);
     color += uBaseColor * forwardScatter * 0.18;
+    color *= 0.9 + rings * 0.25;
 
     gl_FragColor = vec4(color, alpha * 0.88);
 }

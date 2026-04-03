@@ -14,7 +14,7 @@ export class CameraDirector {
         this.controls.rotateSpeed = 0.65;
         this.controls.zoomSpeed = 0.85;
         this.controls.panSpeed = 0.45;
-        this.controls.minDistance = 4;
+        this.controls.minDistance = 8;
         this.controls.maxDistance = 320;
         this.controls.maxPolarAngle = Math.PI * 0.94;
 
@@ -41,12 +41,12 @@ export class CameraDirector {
 
         const direction = solarDirection.multiplyScalar(0.65).add(currentDirection.multiplyScalar(0.35)).normalize();
         const radius = entry.renderRadius;
-        const desiredDistance = THREE.MathUtils.clamp(radius * 6.5, 5.5, radius * 14 + 24);
+        const desiredDistance = THREE.MathUtils.clamp(radius * 9.5, 14, radius * 15 + 26);
         const destination = tempTarget.clone()
             .add(direction.multiplyScalar(desiredDistance))
             .add(new THREE.Vector3(radius * 0.45, radius * 0.18, radius * 0.32));
 
-        this.controls.minDistance = Math.max(radius * 1.35, 2.2);
+        this.controls.minDistance = Math.max(radius * 3.2, 12);
         this.controls.maxDistance = Math.max(desiredDistance * 3.4, radius * 28);
         this.statusText = `Travando camera em ${entry.data.name}`;
 
@@ -80,7 +80,7 @@ export class CameraDirector {
     }
 
     reset(instant = false) {
-        this.controls.minDistance = 4;
+        this.controls.minDistance = 8;
         this.controls.maxDistance = 320;
         this.statusText = "Panorama orbital";
 

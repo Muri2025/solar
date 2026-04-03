@@ -6,7 +6,7 @@ import { createBackground } from "./background.js";
 import { createAtmosphereMaterial } from "../shaders/atmosphereShader.js";
 import { createRingMaterial } from "../shaders/ringShader.js";
 import { getSunRenderRadius, scaleOrbitDistance, scalePlanetRadius } from "../utils/scale.js";
-import { createRadialTexture, loadOptionalTexture, loadTextureBundle } from "../utils/textures.js";
+import { createProceduralPlanetMaps, createRadialTexture, deriveEarthMaterialMaps, deriveRockyMaterialMaps, loadOptionalTexture, loadTextureBundle } from "../utils/textures.js";
 
 const tempVector = new THREE.Vector3();
 
@@ -194,17 +194,31 @@ export class SolarSystem {
             clearcoat: bodyData.material.clearcoat ?? 0,
             clearcoatRoughness: bodyData.material.clearcoatRoughness ?? 0.5,
             emissive: new THREE.Color(bodyData.baseColor).multiplyScalar(0.12),
-            emissiveIntensity: 0.65
+            emissiveIntensity: 0.65,
+            sheen: bodyData.key === "earth" ? 0.08 : 0
         });
 
         const textures = await loadTextureBundle(this.textureLoader, bodyData.textures, this.anisotropy);
-        material.map = textures.albedo ?? null;
+        const proceduralMaps = createProceduralPlanetMaps({
+            key: bodyData.key,
+            baseColor: bodyData.baseColor
+        });
+        const derivedMaps = bodyData.key === "earth"
+            ? deriveEarthMaterialMaps(textures.albedo)
+            : deriveRockyMaterialMaps(textures.albedo);
+
+        material.map = textures.albedo ?? proceduralMaps.albedo ?? null;
         material.normalMap = textures.normal ?? null;
-        material.roughnessMap = textures.roughness ?? null;
-        material.emissiveMap = textures.emissive ?? null;
+        material.bumpMap = textures.normal ? null : (derivedMaps.bump ?? proceduralMaps.bump ?? null);
+        material.bumpScale = textures.normal ? 0 : (bodyData.key === "earth" ? 0.12 : (bodyData.material.bumpScale ?? 0.08));
+        material.roughnessMap = textures.roughness ?? derivedMaps.roughness ?? proceduralMaps.roughness ?? null;
+        material.emissiveMap = textures.emissive ?? proceduralMaps.emissive ?? null;
         if (textures.emissive) {
             material.emissive = new THREE.Color("#ffb473");
-            material.emissiveIntensity = 1.2;
+            material.emissiveIntensity = bodyData.key === "earth" ? 0.65 : 1.2;
+        } else if (proceduralMaps.emissive) {
+            material.emissive = new THREE.Color("#ffb45e");
+            material.emissiveIntensity = 0.45;
         }
 
         if (material.normalMap && bodyData.material.bumpScale) {
@@ -226,18 +240,19 @@ export class SolarSystem {
         if (bodyData.atmosphere) {
             atmosphereMaterial = createAtmosphereMaterial({});
             const atmosphere = new THREE.Mesh(
-                new THREE.SphereGeometry(renderRadius * 1.075, 80, 80),
+                new THREE.SphereGeometry(renderRadius * 1.045, 80, 80),
                 atmosphereMaterial
             );
             tiltGroup.add(atmosphere);
         }
 
         let cloudLayer = null;
-        if (bodyData.clouds && textures.clouds) {
+        const cloudTexture = textures.clouds ?? proceduralMaps.clouds ?? null;
+        if (bodyData.clouds && cloudTexture) {
             const cloudMaterial = new THREE.MeshStandardMaterial({
-                map: textures.clouds,
+                map: cloudTexture,
                 transparent: true,
-                opacity: 0.92,
+                opacity: textures.clouds ? 0.32 : 0.26,
                 depthWrite: false
             });
             cloudLayer = new THREE.Mesh(
