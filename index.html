@@ -3,68 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Solar - Escala Relativa Rápida</title>
-    
-    <!-- Fonts -->
+    <title>Solaris Mission Control</title>
+    <meta name="description" content="Simulacao interativa do Sistema Solar em alta fidelidade com Three.js.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    
-    <!-- WebGL Canvas for Three.js -->
-    <canvas id="webgl-canvas"></canvas>
+    <div class="app-shell">
+        <canvas id="scene-canvas" aria-label="Simulacao 3D do sistema solar"></canvas>
 
-    <!-- Interface HUD -->
-    <nav class="hud">
-        <div class="hud-top">
-            <div class="brand">
-                <div class="brand-copy">// O.S.S - ORBITAL SOLAR SYSTEM</div>
-                <h1 class="logo">SOLARIS</h1>
-            </div>
-            <div class="controls-panel">
-                <div class="control-group">
-                    <label for="timeSpeed">Multiplicador de Tempo (Velocidade Orbital):</label>
-                    <input type="range" id="timeSpeed" min="0" max="1000" value="50">
-                    <span id="speedValue">50x</span>
+        <div class="hud-grid">
+            <header class="panel panel-header">
+                <div>
+                    <p class="eyebrow">Orbital Survey Sequence</p>
+                    <h1 class="brand">SOLARIS</h1>
                 </div>
-                <div class="control-desc">
-                    Arraste o mouse no espaço para Mover a Câmera.<br>Scroll para Zoom.
+                <div class="header-meta">
+                    <div class="hud-toggles">
+                        <button id="toggleLeftPanel" class="icon-button" type="button" aria-pressed="false">Ocultar esquerda</button>
+                        <button id="toggleRightPanel" class="icon-button" type="button" aria-pressed="false">Ocultar direita</button>
+                    </div>
+                    <span class="status-pill" id="appStatus">Inicializando cena orbital</span>
+                    <div class="telemetry">
+                        <span>Data simulada</span>
+                        <strong id="simDate">--</strong>
+                    </div>
                 </div>
-            </div>
+            </header>
+
+            <section class="panel panel-controls">
+                <div class="panel-title-row">
+                    <h2>Controle Temporal</h2>
+                    <span id="timeSpeedValue">18 d/s</span>
+                </div>
+                <input id="timeSpeed" type="range" min="0" max="100" value="54" aria-label="Velocidade da simulacao">
+                <p class="panel-copy">Clique em um corpo celeste ou use os atalhos ao lado para viajar com a camera. Arraste para orbitar, scroll para ajustar o enquadramento.</p>
+                <div class="action-row">
+                    <button id="focusReset" class="ghost-button" type="button">Visao geral</button>
+                </div>
+            </section>
+
+            <aside class="panel panel-targets">
+                <div class="panel-title-row">
+                    <h2>Alvos</h2>
+                    <span id="selectionHint">Raycast ativo</span>
+                </div>
+                <div class="body-list" id="bodyList"></div>
+            </aside>
+
+            <section class="panel panel-info">
+                <p class="eyebrow" id="infoCategory">Planeta selecionado</p>
+                <h2 id="infoName">Terra</h2>
+                <p class="info-subtitle" id="infoSubtitle">Mundo oceanico com atmosfera de Rayleigh/Mie e camada dinamica de nuvens.</p>
+                <p class="info-description" id="infoDescription">Carregando os parametros orbitais e materiais da cena.</p>
+                <dl class="stats-grid" id="infoStats"></dl>
+            </section>
         </div>
+    </div>
 
-        <div class="hud-bottom">
-            <div class="planet-info" id="planetInfo">
-                <h2 id="infoTitle">Sistema Solar</h2>
-                <p id="infoDesc">Bem-vindo. Cada ano na Terra equivale a translação dos demais planetas sob as leis federais da via láctea em tempo real acelerado.</p>
-            </div>
-            
-            <div class="audio-toggle">
-                <span class="btn-text">Data:</span> 
-                <button class="sound-btn" id="resetCamBtn">Resetar Câmera</button>
-            </div>
-            
-            <div class="missions-panel">
-                <span class="btn-text">Mission Control:</span>
-                <button class="mission-btn" id="btnApollo">Apollo 11</button>
-                <button class="mission-btn" id="btnArtemis">Artemis II</button>
-                <button class="mission-btn cancel" id="btnCancelMission" style="display: none;">Abortar</button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Libraries: Three.js and OrbitControls -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
-    
-    <!-- Animador Cinemático GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
-    <!-- Main 3D Motor Script -->
-    <script src="script.js"></script>
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>
