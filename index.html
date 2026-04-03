@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Solar - Escala Relativa Rápida</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <!-- WebGL Canvas for Three.js -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Interface HUD -->
+    <nav class="hud">
+        <div class="hud-top">
+            <div class="brand">
+                <div class="brand-copy">// O.S.S - ORBITAL SOLAR SYSTEM</div>
+                <h1 class="logo">SOLARIS</h1>
+            </div>
+            <div class="controls-panel">
+                <div class="control-group">
+                    <label for="timeSpeed">Multiplicador de Tempo (Velocidade Orbital):</label>
+                    <input type="range" id="timeSpeed" min="0" max="1000" value="50">
+                    <span id="speedValue">50x</span>
+                </div>
+                <div class="control-desc">
+                    Arraste o mouse no espaço para Mover a Câmera.<br>Scroll para Zoom.
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-bottom">
+            <div class="planet-info" id="planetInfo">
+                <h2 id="infoTitle">Sistema Solar</h2>
+                <p id="infoDesc">Bem-vindo. Cada ano na Terra equivale a translação dos demais planetas sob as leis federais da via láctea em tempo real acelerado.</p>
+            </div>
+            
+            <div class="audio-toggle">
+                <span class="btn-text">Data:</span> 
+                <button class="sound-btn" id="resetCamBtn">Resetar Câmera</button>
+            </div>
+            
+            <div class="missions-panel">
+                <span class="btn-text">Mission Control:</span>
+                <button class="mission-btn" id="btnApollo">Apollo 11</button>
+                <button class="mission-btn" id="btnArtemis">Artemis II</button>
+                <button class="mission-btn cancel" id="btnCancelMission" style="display: none;">Abortar</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Libraries: Three.js and OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- Animador Cinemático GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- Main 3D Motor Script -->
+    <script src="script.js"></script>
+</body>
+</html>
