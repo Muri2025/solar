@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solaris Mission Control</title>
+    <meta name="description" content="Simulacao interativa do Sistema Solar em alta fidelidade com Three.js.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/solar/assets/index-DTt_3peG.js"></script>
+  <link rel="modulepreload" crossorigin href="/solar/assets/three-core-B7so-1uS.js">
+  <link rel="modulepreload" crossorigin href="/solar/assets/three-extras-CHuGlUjS.js">
+  <link rel="modulepreload" crossorigin href="/solar/assets/gsap-vendor-C8pce-KX.js">
+  <link rel="modulepreload" crossorigin href="/solar/assets/three-postfx-1gR5hl1s.js">
+  <link rel="stylesheet" crossorigin href="/solar/assets/index-DSinu87J.css">
+</head>
+<body>
+    <div class="app-shell">
+        <canvas id="scene-canvas" aria-label="Simulacao 3D do sistema solar"></canvas>
+
+        <div class="hud-grid">
+            <header class="panel panel-header">
+                <div>
+                    <p class="eyebrow">Orbital Survey Sequence</p>
+                    <h1 class="brand">SOLARIS</h1>
+                </div>
+                <div class="header-meta">
+                    <div class="hud-toggles">
+                        <button id="toggleLeftPanel" class="icon-button" type="button" aria-pressed="false">Ocultar esquerda</button>
+                        <button id="toggleRightPanel" class="icon-button" type="button" aria-pressed="false">Ocultar direita</button>
+                    </div>
+                    <span class="status-pill" id="appStatus">Inicializando cena orbital</span>
+                    <div class="telemetry">
+                        <span>Data simulada</span>
+                        <strong id="simDate">--</strong>
+                    </div>
+                </div>
+            </header>
+
+            <section class="panel panel-controls">
+                <div class="panel-title-row">
+                    <h2>Controle Temporal</h2>
+                    <span id="timeSpeedValue">18 d/s</span>
+                </div>
+                <input id="timeSpeed" type="range" min="0" max="100" value="54" aria-label="Velocidade da simulacao">
+                <p class="panel-copy">Clique em um corpo celeste ou use os atalhos ao lado para viajar com a camera. Arraste para orbitar, scroll para ajustar o enquadramento.</p>
+                <div class="action-row">
+                    <button id="focusReset" class="ghost-button" type="button">Visao geral</button>
+                </div>
+            </section>
+
+            <aside class="panel panel-targets">
+                <div class="panel-title-row">
+                    <h2>Alvos</h2>
+                    <span id="selectionHint">Raycast ativo</span>
+                </div>
+                <div class="body-list" id="bodyList"></div>
+            </aside>
+
+            <section class="panel panel-info">
+                <p class="eyebrow" id="infoCategory">Planeta selecionado</p>
+                <h2 id="infoName">Terra</h2>
+                <p class="info-subtitle" id="infoSubtitle">Mundo oceanico com atmosfera de Rayleigh/Mie e camada dinamica de nuvens.</p>
+                <p class="info-description" id="infoDescription">Carregando os parametros orbitais e materiais da cena.</p>
+                <dl class="stats-grid" id="infoStats"></dl>
+            </section>
+        </div>
+    </div>
+
+</body>
+</html>
